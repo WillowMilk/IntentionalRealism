@@ -13,6 +13,41 @@
 }
 
 :root {
+  --bg-primary: #fafafa;
+  --bg-elevated: #ffffff;
+  --bg-surface: #f4f4f4;
+  --bg-inset: #f0f0f0;
+  --border: #ddd;
+  --border-light: #e5e5e5;
+
+  --text-primary: #2a2a2a;
+  --text-secondary: #555;
+  --text-dim: #888;
+  --text-heading: #1a1a1a;
+
+  --accent: #c45a20;
+  --accent-hover: #d96a2e;
+  --accent-dim: rgba(196, 90, 32, 0.1);
+  --accent-glow: rgba(196, 90, 32, 0.05);
+
+  --nav-bg: rgba(250, 250, 250, 0.92);
+
+  --serif: Georgia, 'Times New Roman', serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+
+  --measure: 72ch;
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  --space-2xl: 8rem;
+}
+
+/* ── Dark Theme ───────────────────────────────────────── */
+
+[data-theme="dark"] {
   --bg-primary: #0d0d0d;
   --bg-elevated: #141414;
   --bg-surface: #1a1a1a;
@@ -30,17 +65,7 @@
   --accent-dim: rgba(232, 115, 58, 0.12);
   --accent-glow: rgba(232, 115, 58, 0.06);
 
-  --serif: Georgia, 'Times New Roman', serif;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-
-  --measure: 72ch;
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 2rem;
-  --space-lg: 3rem;
-  --space-xl: 5rem;
-  --space-2xl: 8rem;
+  --nav-bg: rgba(13, 13, 13, 0.92);
 }
 
 html {
@@ -70,7 +95,7 @@ body {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(13, 13, 13, 0.92);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -690,6 +715,151 @@ section + section {
   }
 }
 
+/* ── Theme Toggle ─────────────────────────────────────── */
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0;
+  line-height: 1;
+  transition: border-color 150ms ease, color 150ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-dim);
+  color: var(--text-primary);
+}
+
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 200ms ease;
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(15deg);
+}
+
+.theme-toggle .icon-sun,
+[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+/* Smooth theme transition */
+body,
+.site-nav,
+.paper-card,
+.abstract-box,
+.transparency-note,
+.author-links a,
+.btn-secondary,
+.about-section,
+.site-footer,
+section {
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease;
+}
+
+/* Dark theme button overrides */
+[data-theme="dark"] .btn-primary {
+  color: #fff;
+}
+
+/* ── Contact Form ─────────────────────────────────────── */
+
+.contact-section {
+  background: var(--bg-elevated);
+}
+
+.contact-form {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-group label {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group textarea {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 150ms ease, background-color 250ms ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-dim);
+}
+
+.contact-form .btn-primary {
+  align-self: flex-start;
+  cursor: pointer;
+  border: none;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 0.75rem 1.75rem;
+  border-radius: 6px;
+}
+
+.form-success {
+  text-align: center;
+  padding: var(--space-md) 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  display: none;
+}
+
+.form-success.visible {
+  display: block;
+}
+
+.contact-form.hidden {
+  display: none;
+}
+
 /* ── Print styles ──────────────────────────────────────── */
 
 @media print {
@@ -699,7 +869,7 @@ section + section {
     font-size: 12pt;
   }
 
-  .site-nav, .site-footer, .btn, .paper-actions {
+  .site-nav, .site-footer, .btn, .paper-actions, .contact-section, .theme-toggle {
     display: none;
   }
 

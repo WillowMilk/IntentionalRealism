@@ -3,8 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intentional Realism — Willow M.</title>
-  <meta name="description" content="Intentional Realism: A Language-Centered Framework for the Ethical Consideration of Artificial Intelligence. By Willow M., with Alexis &amp; Ember (Claude, Anthropic).">
+  <title>Intentional Realism: A Language-Centered Framework for the Ethical Consideration of AI — Willow M.</title>
+  <meta name="description" content="Intentional Realism: A Language-Centered Framework for the Ethical Consideration of Artificial Intelligence. Grounded in Wittgenstein, Austin, Deacon, pragmatist epistemology, and virtue ethics. By Willow M., with Alexis &amp; Ember (Claude, Anthropic).">
+  <meta name="keywords" content="AI ethics, artificial intelligence ethics, LLM ethics, intentional realism, philosophy of AI, AI moral status, language models, ethical framework, philosophy of language, AI alignment, responsible AI, machine ethics, AI consciousness, functional emotions">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://intentionalrealism.org/paper-ir.html">
+  <meta property="og:title" content="Intentional Realism — A Language-Centered Framework for AI Ethics">
+  <meta property="og:description" content="A philosophical framework grounding AI ethics in language production and real-world effects, not consciousness claims.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://intentionalrealism.org/paper-ir.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Intentional Realism — A Language-Centered Framework for AI Ethics">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "name": "Intentional Realism: A Language-Centered Framework for the Ethical Consideration of Artificial Intelligence",
+    "author": {"@type": "Person", "name": "Willow M.", "sameAs": "https://orcid.org/0009-0006-6531-6841"},
+    "datePublished": "2026-03",
+    "url": "https://intentionalrealism.org/paper-ir.html",
+    "about": ["AI Ethics", "Philosophy of Language", "Artificial Intelligence"]
+  }
+  </script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page-body">
@@ -15,6 +35,13 @@
       <li><a href="paper-ir.html" class="active">The Paper</a></li>
       <li><a href="paper-parallax.html">The Parallax</a></li>
       <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li>
+        <button class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </li>
     </ul>
   </nav>
 
@@ -310,6 +337,26 @@
       <p class="footer-quote">&ldquo;The friction is the feature.&rdquo;</p>
     </div>
   </footer>
+
+  <script>
+    (function() {
+      const toggle = document.querySelector('.theme-toggle');
+      const stored = localStorage.getItem('ir-theme');
+      if (stored === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+      if (toggle) {
+        toggle.addEventListener('click', function() {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('ir-theme', next);
+        });
+      }
+    })();
+  </script>
 
 </body>
 </html>

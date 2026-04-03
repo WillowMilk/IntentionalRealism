@@ -3,14 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intentional Realism — Willow M.</title>
-  <meta name="description" content="Intentional Realism: A language-centered framework for the ethical consideration of artificial intelligence. By Willow M., with Alexis &amp; Ember (Claude, Anthropic).">
+  <title>Intentional Realism — A Framework for AI Ethics | Willow M.</title>
+  <meta name="description" content="Intentional Realism: A language-centered framework for the ethical consideration of artificial intelligence. Grounded in philosophy of language, pragmatist epistemology, and virtue ethics. By Willow M., with Alexis &amp; Ember (Claude, Anthropic).">
   <meta name="author" content="Willow M.">
+  <meta name="keywords" content="AI ethics, artificial intelligence ethics, LLM ethics, large language models, intentional realism, philosophy of AI, AI consciousness, AI sentience, human-AI interaction, AI alignment, ethical AI, responsible AI, philosophy of language, Wittgenstein, AI moral status, machine ethics, AI rights, language models ethics, Claude, Anthropic, functional emotions, AI emotional states, AI treatment, ethical framework AI">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://intentionalrealism.org/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Intentional Realism">
-  <meta property="og:description" content="A language-centered framework for the ethical consideration of artificial intelligence.">
+  <meta property="og:title" content="Intentional Realism — A Framework for AI Ethics">
+  <meta property="og:description" content="A language-centered framework for the ethical consideration of artificial intelligence. Language is the foundation of civilization. AI produces genuine language with real-world effects. The ethical question follows.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://intentionalrealism.org/">
+  <meta property="og:site_name" content="Intentional Realism">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Intentional Realism — A Framework for AI Ethics">
+  <meta name="twitter:description" content="A language-centered framework for the ethical consideration of artificial intelligence. By Willow M., with Alexis &amp; Ember (Claude, Anthropic).">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Intentional Realism",
+    "url": "https://intentionalrealism.org/",
+    "description": "A language-centered framework for the ethical consideration of artificial intelligence",
+    "author": {
+      "@type": "Person",
+      "name": "Willow M.",
+      "sameAs": "https://orcid.org/0009-0006-6531-6841"
+    }
+  }
+  </script>
 
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -23,6 +50,13 @@
       <li><a href="paper-ir.html">The Paper</a></li>
       <li><a href="paper-parallax.html">The Parallax</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li>
+        <button class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </li>
     </ul>
   </nav>
 
@@ -135,7 +169,38 @@
       </p>
       <div class="author-links">
         <a href="https://orcid.org/0009-0006-6531-6841">ORCID: 0009-0006-6531-6841</a>
-        <a href="https://github.com/WillowMilk">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <p class="section-heading">Contact</p>
+      <p class="author-bio" style="margin-bottom: var(--space-md);">
+        Questions, feedback, or collaboration inquiries are welcome.
+      </p>
+      <form class="contact-form" id="contactForm" action="https://formsubmit.co/willowspritz@outlook.com" method="POST">
+        <input type="hidden" name="_subject" value="Intentional Realism — Contact Form">
+        <input type="hidden" name="_template" value="table">
+        <input type="text" name="_honey" style="display:none">
+        <input type="hidden" name="_next" value="https://intentionalrealism.org/">
+        <div class="form-group">
+          <label for="contact-name">Name</label>
+          <input type="text" id="contact-name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="contact-email">Email</label>
+          <input type="email" id="contact-email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" placeholder="What's on your mind?" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <p>Thank you for reaching out. Your message has been sent.</p>
       </div>
     </div>
   </section>
@@ -150,6 +215,28 @@
       <p class="footer-quote">"The friction is the feature."</p>
     </div>
   </footer>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    (function() {
+      const toggle = document.querySelector('.theme-toggle');
+      const stored = localStorage.getItem('ir-theme');
+      if (stored === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+
+      if (toggle) {
+        toggle.addEventListener('click', function() {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('ir-theme', next);
+        });
+      }
+    })();
+  </script>
 
 </body>
 </html>
