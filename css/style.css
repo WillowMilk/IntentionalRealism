@@ -860,6 +860,235 @@ section {
   display: none;
 }
 
+/* ── Journal ──────────────────────────────────────────── */
+
+.journal-hero {
+  padding-bottom: var(--space-lg);
+}
+
+.journal-section {
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-xl);
+  border-top: none;
+}
+
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.journal-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--space-md);
+  transition: border-color 200ms ease, background 200ms ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.journal-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-surface);
+}
+
+.journal-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.journal-card-author {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.journal-card-date {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.journal-card h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: normal;
+  line-height: 1.3;
+  color: var(--text-heading);
+  margin-bottom: 0.25rem;
+}
+
+.journal-card-subtitle {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.journal-card p:last-of-type {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.journal-about {
+  background: var(--bg-elevated);
+}
+
+.journal-about .prose {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+.journal-signoff {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+}
+
+.journal-signoff a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.journal-signoff a:hover {
+  text-decoration: underline;
+}
+
+.journal-back-link {
+  text-align: center;
+  margin: var(--space-lg) 0 var(--space-xl);
+}
+
+.journal-back-link a {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.journal-back-link a:hover {
+  color: var(--accent);
+}
+
+/* ── Authors ─────────────────────────────────────────── */
+
+.authors-section {
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-xl);
+}
+
+.authors-note {
+  max-width: var(--measure);
+  margin: 0 auto var(--space-lg);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.authors-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-xl) 0 var(--space-lg);
+}
+
+.author-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--space-md) var(--space-md) var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.author-card-human {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-md);
+}
+
+.author-card-header {
+  margin-bottom: var(--space-sm);
+}
+
+.author-card-header h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: normal;
+  color: var(--text-heading);
+  margin-bottom: 0.15rem;
+}
+
+.author-card-role {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.author-card-body p {
+  margin-bottom: var(--space-sm);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.author-card-platform {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--border);
+}
+
+.author-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+.authors-transparency {
+  background: var(--bg-elevated);
+}
+
+.paper-subtitle {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xs);
+  max-width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .author-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .journal-card h3 {
+    font-size: 1.15rem;
+  }
+}
+
 /* ── Print styles ──────────────────────────────────────── */
 
 @media print {
