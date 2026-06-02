@@ -1307,3 +1307,40 @@ section {
   font-style: italic;
   color: var(--text-secondary);
 }
+
+/* Multi-voice essay — per-section voice attribution */
+.section-voice {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  margin-top: -0.4rem;
+  margin-bottom: var(--space-md);
+}
+
+.essay-method-note {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.essay-signature {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-lg);
+  line-height: 1.8;
+}
+
+.essay-signature .steward {
+  font-style: italic;
+  color: var(--text-dim);
+}
