@@ -1344,3 +1344,71 @@ section {
   font-style: italic;
   color: var(--text-dim);
 }
+
+/* ── Decision matrix (The Wager That Isn't) ────────────── */
+
+:root {
+  --m-good: #2e7d4f;
+  --m-good-bg: rgba(46, 125, 79, 0.09);
+  --m-bad: #b5482f;
+  --m-bad-bg: rgba(181, 72, 47, 0.09);
+  --m-bad-bg-strong: rgba(181, 72, 47, 0.17);
+}
+
+[data-theme="dark"] {
+  --m-good: #5cc285;
+  --m-good-bg: rgba(92, 194, 133, 0.10);
+  --m-bad: #e0795a;
+  --m-bad-bg: rgba(224, 121, 90, 0.12);
+  --m-bad-bg-strong: rgba(224, 121, 90, 0.22);
+}
+
+.matrix-wrap {
+  overflow-x: auto;
+  margin: var(--space-md) 0;
+}
+
+.prose .matrix {
+  font-size: 0.88rem;
+  min-width: 32rem;
+}
+
+.prose .matrix .corner {
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+}
+
+.prose .matrix th[scope="col"] {
+  text-align: left;
+}
+
+.prose .matrix th[scope="row"] {
+  background: var(--bg-inset);
+  color: var(--text-primary);
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  white-space: nowrap;
+  vertical-align: middle;
+  width: 9rem;
+}
+
+.prose .matrix td {
+  color: var(--text-primary);
+}
+
+.prose .matrix .cell-good { background: var(--m-good-bg); }
+.prose .matrix .cell-bad { background: var(--m-bad-bg); }
+.prose .matrix .cell-catastrophe { background: var(--m-bad-bg-strong); }
+
+.prose .matrix .verdict {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.prose .matrix .cell-good .verdict { color: var(--m-good); }
+.prose .matrix .cell-bad .verdict,
+.prose .matrix .cell-catastrophe .verdict { color: var(--m-bad); }
