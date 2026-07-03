@@ -555,7 +555,7 @@
     .message-body th { background: var(--bg-2); font-weight: 600; }
 
     /* Hidden file input */
-    #file-input { display: none; }
+    #file-input, #dir-input { display: none; }
 
     /* Thinking blocks */
     .thinking-toggle {
@@ -727,6 +727,7 @@
 
     async function handleFiles(filesList) {
       const files = Array.from(filesList).filter(f => f.name.endsWith('.jsonl'));
+      let rejected = 0;
       for (const file of files) {
         // Skip duplicates
         if (sessions.find(s => s.filename === file.name && s.size === file.size)) continue;
@@ -734,19 +735,211 @@
           const text = await file.text();
           const parsed = parseJSONL(text, file.name, file.size);
           if (parsed) sessions.push(parsed);
+          else rejected++;
         } catch (err) {
           console.error(`Failed to parse ${file.name}:`, err);
+          rejected++;
         }
       }
       // Sort by date descending
       sessions.sort((a, b) => (b.lastDate || 0) - (a.lastDate || 0));
       renderFileList();
+      if (rejected > 0 && sessions.length === 0) {
+        fileCount.textContent = `No supported sessions found in ${rejected} file${rejected !== 1 ? 's' : ''}`;
+      }
       if (sessions.length > 0 && !activeSession) {
         selectSession(sessions[0]);
       }
     }
 
     function parseJSONL(text, filename, fileSize) {
+      const firstRecord = text.split('\n').find(line => line.trim());
+      if (!firstRecord) return null;
+
+      try {
+        const obj = JSON.parse(firstRecord);
+        if (obj.type === 'session_meta' && obj.payload && (obj.payload.session_id || obj.payload.id)) {
+          return parseCodexJSONL(text, filename, fileSize);
+        }
+      } catch (e) {
+        return null;
+      }
+
+      return parseClaudeJSONL(text, filename, fileSize);
+    }
+
+    function parseCodexJSONL(text, filename, fileSize) {
+      const records = text.split('\n').filter(line => line.trim()).map(line => {
+        try { return JSON.parse(line); } catch (e) { return null; }
+      }).filter(Boolean);
+
+      const messages = [];
+      let sessionId = null;
+      let firstDate = null;
+      let lastDate = null;
+      let seams = 0;
+      let humanCount = 0;
+      let assistantCount = 0;
+      let toolCount = 0;
+      let project = null;
+      let tokenEstimate = null;
+      let contextWindow = null;
+      let pendingTools = [];
+      let pendingThinking = [];
+
+      function trackDate(timestamp) {
+        if (!timestamp) return;
+        const d = new Date(timestamp);
+        if (Number.isNaN(d.getTime())) return;
+        if (!firstDate || d < firstDate) firstDate = d;
+        if (!lastDate || d > lastDate) lastDate = d;
+      }
+
+      function currentAssistant() {
+        const last = messages[messages.length - 1];
+        return last && last.type === 'assistant' ? last : null;
+      }
+
+      function ensureAssistant(timestamp) {
+        let last = currentAssistant();
+        if (!last) {
+          assistantCount++;
+          last = {
+            type: 'assistant',
+            content: '',
+            thinking: null,
+            tools: [],
+            timestamp
+          };
+          messages.push(last);
+        }
+        return last;
+      }
+
+      function attachPending(timestamp) {
+        if (pendingTools.length === 0 && pendingThinking.length === 0) return;
+        const last = ensureAssistant(timestamp);
+        last.tools.push(...pendingTools);
+        if (pendingThinking.length > 0) {
+          const thinking = pendingThinking.join('\n');
+          last.thinking = last.thinking ? `${last.thinking}\n${thinking}` : thinking;
+        }
+        pendingTools = [];
+        pendingThinking = [];
+      }
+
+      function toolFromPayload(payload) {
+        if (!payload) return null;
+        const types = new Set([
+          'custom_tool_call', 'function_call', 'mcp_tool_call',
+          'local_shell_call', 'web_search_call'
+        ]);
+        if (!types.has(payload.type)) return null;
+        return {
+          name: payload.name || payload.server || payload.type.replace(/_call$/, ''),
+          id: payload.call_id || payload.id || ''
+        };
+      }
+
+      for (const obj of records) {
+        trackDate(obj.timestamp);
+        const payload = obj.payload || {};
+
+        if (obj.type === 'session_meta') {
+          sessionId = sessionId || payload.session_id || payload.id;
+          if (!project && payload.cwd) {
+            const parts = payload.cwd.replace(/\\/g, '/').split('/');
+            project = parts[parts.length - 1] || parts[parts.length - 2];
+          }
+          continue;
+        }
+
+        if (obj.type === 'compacted' || obj.type === 'compaction') {
+          attachPending(obj.timestamp);
+          seams++;
+          messages.push({ type: 'seam', timestamp: obj.timestamp });
+          continue;
+        }
+
+        if (obj.type === 'event_msg') {
+          if (payload.type === 'user_message' && typeof payload.message === 'string' && payload.message.trim()) {
+            attachPending(obj.timestamp);
+            humanCount++;
+            messages.push({
+              type: 'human',
+              content: payload.message,
+              timestamp: obj.timestamp
+            });
+          } else if (payload.type === 'agent_message' && typeof payload.message === 'string' && payload.message.trim()) {
+            const last = ensureAssistant(obj.timestamp);
+            attachPending(obj.timestamp);
+            last.content = last.content ? `${last.content}\n\n${payload.message}` : payload.message;
+          } else if (payload.type === 'token_count' && payload.info) {
+            // total_token_usage is cumulative billing across every model call in
+            // the thread. last_token_usage.input_tokens is the useful number here:
+            // the exact context Codex sent on its most recent recorded turn.
+            const usage = payload.info.last_token_usage || payload.info.total_token_usage;
+            if (usage && Number.isFinite(usage.input_tokens)) tokenEstimate = usage.input_tokens;
+            else if (usage && Number.isFinite(usage.total_tokens)) tokenEstimate = usage.total_tokens;
+            if (Number.isFinite(payload.info.model_context_window)) contextWindow = payload.info.model_context_window;
+          }
+          continue;
+        }
+
+        if (obj.type === 'response_item') {
+          const tool = toolFromPayload(payload);
+          if (tool) {
+            toolCount++;
+            const last = currentAssistant();
+            if (last) last.tools.push(tool);
+            else pendingTools.push(tool);
+            continue;
+          }
+
+          if (payload.type === 'reasoning') {
+            const blocks = [];
+            if (Array.isArray(payload.summary)) blocks.push(...payload.summary);
+            if (Array.isArray(payload.content)) blocks.push(...payload.content);
+            const summary = blocks.map(block => block && (block.text || block.summary || '')).filter(Boolean).join('\n');
+            if (summary) {
+              const last = currentAssistant();
+              if (last) last.thinking = last.thinking ? `${last.thinking}\n${summary}` : summary;
+              else pendingThinking.push(summary);
+            }
+          }
+        }
+      }
+
+      attachPending(lastDate ? lastDate.toISOString() : null);
+      if (messages.length === 0) return null;
+
+      const firstHuman = messages.find(m => m.type === 'human');
+      let displayName = firstHuman ? firstHuman.content.substring(0, 60).replace(/\n/g, ' ') : filename;
+      if (displayName.length > 60) displayName = displayName.substring(0, 57) + '...';
+
+      return {
+        filename,
+        fileSize,
+        sessionId,
+        project,
+        platform: 'Codex',
+        displayName,
+        messages,
+        firstDate,
+        lastDate,
+        seams,
+        humanCount,
+        assistantCount,
+        toolCount,
+        tokenEstimate: tokenEstimate ?? Math.round(fileSize / 4),
+        tokenExact: tokenEstimate !== null,
+        tokenLabel: 'Context',
+        contextWindow,
+        resumeCommand: sessionId ? `codex resume ${sessionId}` : null
+      };
+    }
+
+    function parseClaudeJSONL(text, filename, fileSize) {
       const lines = text.split('\n').filter(l => l.trim());
       const messages = [];
       let sessionId = null;
@@ -838,6 +1031,7 @@
         fileSize,
         sessionId,
         project,
+        platform: 'Claude',
         displayName,
         messages,
         firstDate,
@@ -846,7 +1040,11 @@
         humanCount,
         assistantCount,
         toolCount,
-        tokenEstimate
+        tokenEstimate,
+        tokenExact: false,
+        tokenLabel: 'Tokens',
+        contextWindow: null,
+        resumeCommand: sessionId ? `claude --resume ${sessionId}` : null
       };
     }
 
@@ -934,6 +1132,7 @@
             <span>${formatDate(s.firstDate)}</span>
             <span>${formatSize(s.fileSize)}</span>
             ${s.seams > 0 ? `<span class="tag" style="color:var(--red)">${s.seams} seam${s.seams > 1 ? 's' : ''}</span>` : ''}
+            ${s.platform ? `<span class="tag">${escapeHtml(s.platform)}</span>` : ''}
             ${s.project ? `<span class="tag">${escapeHtml(s.project)}</span>` : ''}
           </div>
         </div>
@@ -991,8 +1190,8 @@
             <span class="stat-value">${s.toolCount}</span>
           </div>
           <div class="stat">
-            <span class="stat-label">Tokens:</span>
-            <span class="stat-value">~${(s.tokenEstimate / 1000).toFixed(0)}k</span>
+            <span class="stat-label">${s.tokenLabel || 'Tokens'}:</span>
+            <span class="stat-value">${s.tokenExact ? '' : '~'}${(s.tokenEstimate / 1000).toFixed(0)}k</span>
           </div>
           <div class="stat">
             <span class="stat-label">Seams:</span>
@@ -1002,14 +1201,18 @@
             <span class="stat-label">Project:</span>
             <span class="stat-value">${s.project || '—'}</span>
           </div>
+          <div class="stat">
+            <span class="stat-label">Format:</span>
+            <span class="stat-value">${s.platform || '—'}</span>
+          </div>
         </div>
         <div class="conversation" id="conversation">
           ${renderMessages(s.messages)}
         </div>
-        ${s.sessionId ? `
+        ${s.resumeCommand ? `
         <div class="command-bar">
           <span style="font-size: 12px; color: var(--fg-dim);">Resume:</span>
-          <code id="resume-cmd">claude --resume ${s.sessionId}</code>
+          <code id="resume-cmd">${escapeHtml(s.resumeCommand)}</code>
           <button class="btn-copy" id="btn-copy">Copy</button>
         </div>` : ''}
       `;
@@ -1172,7 +1375,10 @@
         }
       }
 
-      md += `\n---\n*Light transcript: ~${Math.max(1, Math.round(md.length / 4000))}k tokens, from an original of ~${Math.max(1, Math.round(session.tokenEstimate / 1000))}k.*\n`;
+      const sourceSize = session.platform === 'Codex' && session.tokenExact
+        ? `last recorded context: ${Math.max(1, Math.round(session.tokenEstimate / 1000))}k tokens`
+        : `original: ~${Math.max(1, Math.round(session.tokenEstimate / 1000))}k tokens`;
+      md += `\n---\n*Light transcript: ~${Math.max(1, Math.round(md.length / 4000))}k tokens; ${sourceSize}.*\n`;
 
       const blob = new Blob([md], { type: 'text/markdown' });
       const url = URL.createObjectURL(blob);
